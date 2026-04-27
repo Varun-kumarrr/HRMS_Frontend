@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { LayoutDashboard, Users, Clock3, CalendarCheck } from "lucide-react";
+import { LayoutDashboard, Users, Clock3, CalendarCheck, Calculator } from "lucide-react";
 
 const Sidebar = () => {
   return (
@@ -67,6 +67,20 @@ const Sidebar = () => {
         >
           <CalendarCheck size={18} />
           Leave Management
+        </NavLink>
+
+        <NavLink
+          to="/payroll-management"
+          className={({ isActive }) =>
+            `flex items-center gap-3 px-4 py-3 rounded-lg transition ${
+              isActive
+                ? "bg-blue-100 text-blue-600 font-semibold"
+                : "text-gray-600 hover:bg-gray-100"
+            }`
+          }
+        >
+          <Calculator size={18} />
+          Payroll Management
         </NavLink>
 
       </nav>

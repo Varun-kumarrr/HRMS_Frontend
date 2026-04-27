@@ -4,6 +4,7 @@ import Dashboard from "../pages/Dashboard/Dashboard";
 import EmployeeList from "../pages/Employees/EmployeeList";
 import TimeTracking from "../pages/TimeTracking/TimeTracking";
 import LeaveManagement from "../pages/LeaveManagement/LeaveManagement";
+import PayrollManagement from "../pages/PayrollManagement/PayrollManagement";
 import ProtectedRoute from "../components/ProtectedRoute";
 
 const AppRoutes = () => {
@@ -43,6 +44,15 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <LeaveManagement />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/payroll-management"
+        element={
+          <ProtectedRoute>
+            <PayrollManagement />
           </ProtectedRoute>
         }
       />

@@ -9,6 +9,7 @@ const Navbar = () => {
     "/dashboard": "Dashboard",
     "/employees": "Employees",
     "/time-tracking": "Time Tracking",
+    "/leave-management": "Leave Management",
   };
 
   const pageTitle = titleMap[location.pathname] || "HRMS";

@@ -3,6 +3,7 @@ import Login from "../pages/Auth/Login";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import EmployeeList from "../pages/Employees/EmployeeList";
 import TimeTracking from "../pages/TimeTracking/TimeTracking";
+import LeaveManagement from "../pages/LeaveManagement/LeaveManagement";
 import ProtectedRoute from "../components/ProtectedRoute";
 
 const AppRoutes = () => {
@@ -33,6 +34,15 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <TimeTracking />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/leave-management"
+        element={
+          <ProtectedRoute>
+            <LeaveManagement />
           </ProtectedRoute>
         }
       />

@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { LayoutDashboard, Users } from "lucide-react";
+import { LayoutDashboard, Users, Clock3 } from "lucide-react";
 
 const Sidebar = () => {
   return (
@@ -39,6 +39,20 @@ const Sidebar = () => {
         >
           <Users size={18} />
           Employees
+        </NavLink>
+
+        <NavLink
+          to="/time-tracking"
+          className={({ isActive }) =>
+            `flex items-center gap-3 px-4 py-3 rounded-lg transition ${
+              isActive
+                ? "bg-blue-100 text-blue-600 font-semibold"
+                : "text-gray-600 hover:bg-gray-100"
+            }`
+          }
+        >
+          <Clock3 size={18} />
+          Time Tracking
         </NavLink>
 
       </nav>

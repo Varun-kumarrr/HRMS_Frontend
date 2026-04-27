@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import Login from "../pages/Auth/Login";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import EmployeeList from "../pages/Employees/EmployeeList";
+import TimeTracking from "../pages/TimeTracking/TimeTracking";
 import ProtectedRoute from "../components/ProtectedRoute";
 
 const AppRoutes = () => {
@@ -23,6 +24,15 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <EmployeeList />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/time-tracking"
+        element={
+          <ProtectedRoute>
+            <TimeTracking />
           </ProtectedRoute>
         }
       />

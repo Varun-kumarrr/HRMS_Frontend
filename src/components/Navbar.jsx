@@ -1,13 +1,23 @@
 import { useAuth } from "../context/AuthContext";
+import { useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
+  const location = useLocation();
+
+  const titleMap = {
+    "/dashboard": "Dashboard",
+    "/employees": "Employees",
+    "/time-tracking": "Time Tracking",
+  };
+
+  const pageTitle = titleMap[location.pathname] || "HRMS";
 
   return (
     <div className="bg-white border-b px-6 py-4 flex justify-between items-center">
 
       <h1 className="text-xl font-semibold text-gray-800">
-        Dashboard
+        {pageTitle}
       </h1>
 
       <div className="flex items-center gap-4">

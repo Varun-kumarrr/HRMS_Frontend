@@ -1,47 +1,70 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { loginUser } from "../services/authService";
 
+// 🔥 Toggle between MOCK and REAL API
+const USE_MOCK_AUTH = true;
+
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Restore user from localStorage on refresh
+  // 🔥 Restore user on refresh
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
+
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
+
+    setLoading(false);
   }, []);
 
-  // 🔐 LOGIN FUNCTION (API CONNECTED)
+  // 🔐 LOGIN FUNCTION
   const login = async (email, password) => {
-  try {
-    const response = await loginUser(email, password);
+    // 🔥 MOCK LOGIN
+    if (USE_MOCK_AUTH) {
+      if (email === "admin@hrms.com" && password === "admin123") {
+        const fakeUser = {
+          email,
+          role: "admin",
+        };
 
-    console.log("FULL RESPONSE:", response);
+        localStorage.setItem("user", JSON.stringify(fakeUser));
+        setUser(fakeUser);
 
-    // 🔥 IMPORTANT CHECK
-    if (response.status === 200 || response.status === 201) {
-      setUser({ email }); // store minimal user
+        return true;
+      }
 
-      localStorage.setItem("user", JSON.stringify({ email }));
-
-      return true;
+      return false;
     }
 
-    return false;
-  } catch (error) {
-    console.error("Login failed:", error);
-    return false;
-  }
-};
+    // 🔥 REAL API LOGIN
+    try {
+      const response = await loginUser(email, password);
+      const data = response.data;
+
+      localStorage.setItem("user", JSON.stringify(data));
+      setUser(data);
+
+      return true;
+    } catch (error) {
+      console.error("Login failed:", error);
+      return false;
+    }
+  };
 
   // 🚪 LOGOUT FUNCTION
   const logout = () => {
-    setUser(null);
     localStorage.removeItem("user");
+    setUser(null);
   };
+
+  // ⏳ Prevent UI flicker before auth check
+  if (loading) {
+    return <div className="text-center mt-10">Loading...</div>;
+  }
 
   return (
     <AuthContext.Provider value={{ user, login, logout }}>

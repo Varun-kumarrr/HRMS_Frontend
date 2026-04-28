@@ -1,9 +1,8 @@
 import { NavLink } from "react-router-dom";
-import { LayoutDashboard, User, CalendarCheck, LogOut } from "lucide-react";
-import { useAuth } from "../context/AuthContext";
+import { LayoutDashboard, User, CalendarCheck } from "lucide-react";
 
 const EmployeeSidebar = () => {
-  const { logout } = useAuth();
+  
 
   return (
     <div className="w-64 bg-white shadow-lg border-r flex flex-col justify-between">
@@ -64,17 +63,6 @@ const EmployeeSidebar = () => {
           </NavLink>
 
         </nav>
-      </div>
-
-      {/* Bottom Section (Logout) */}
-      <div className="p-4 border-t">
-        <button
-          onClick={logout}
-          className="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-red-500 hover:bg-red-50"
-        >
-          <LogOut size={18} />
-          Logout
-        </button>
       </div>
 
     </div>

@@ -37,6 +37,18 @@ export const AuthProvider = ({ children }) => {
         return true;
       }
 
+       // EMPLOYEE LOGIN
+  if (email === "employee@hrms.com" && password === "employee123") {
+    const fakeUser = {
+      email,
+      role: "employee",
+    };
+
+    localStorage.setItem("user", JSON.stringify(fakeUser));
+    setUser(fakeUser);
+    return true;
+  }
+
       return false;
     }
 

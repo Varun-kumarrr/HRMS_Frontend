@@ -1,10 +1,13 @@
 import Sidebar from "./Sidebar";
 import Navbar from "./Navbar";
+import { useAuth } from "../context/AuthContext";
+import EmployeeSidebar from "./EmployeeSidebar";
 
 const Layout = ({ children }) => {
+  const { user } = useAuth();
   return (
     <div className="flex h-screen bg-gray-100">
-      <Sidebar />
+      {user?.role === "admin" ? <Sidebar /> : <EmployeeSidebar />}
 
       <div className="flex-1 flex flex-col">
         <Navbar />

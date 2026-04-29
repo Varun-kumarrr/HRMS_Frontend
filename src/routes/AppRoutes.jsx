@@ -6,6 +6,9 @@ import TimeTracking from "../pages/TimeTracking/TimeTracking";
 import LeaveManagement from "../pages/LeaveManagement/LeaveManagement";
 import PayrollManagement from "../pages/PayrollManagement/PayrollManagement";
 import ProtectedRoute from "../components/ProtectedRoute";
+import EmployeeDashboard from "../pages/EmployeePanel/EmployeeDashboard";
+import Profile from "../pages/EmployeePanel/Profile";
+import Attendance from "../pages/EmployeePanel/Attendance";
 
 const AppRoutes = () => {
   return (
@@ -53,6 +56,36 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <PayrollManagement />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* EMPLOYEE ROUTE */}
+      <Route
+        path="/employee-dashboard"
+        element={
+          <ProtectedRoute role="employee">
+            <EmployeeDashboard />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* EMPLOYEE PROFILE ROUTE */}
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute role="employee">
+            <Profile />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* EMPLOYEE Attendence Route */}
+      <Route
+        path="/attendance"
+        element={
+          <ProtectedRoute role="employee">
+            <Attendance />
           </ProtectedRoute>
         }
       />

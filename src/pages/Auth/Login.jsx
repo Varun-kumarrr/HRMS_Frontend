@@ -30,7 +30,11 @@ const Login = () => {
     setLoading(false);
 
     if (success) {
-      navigate("/dashboard");
+      const user = JSON.parse(localStorage.getItem("user"));
+
+      user.role === "admin"
+        ? navigate("/dashboard")
+        : navigate("/employee-dashboard");
     } else {
       setError("Invalid email or password");
     }
@@ -39,7 +43,6 @@ const Login = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-gray-100">
       <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-gray-100">
-
         {/* Title */}
         <h2 className="text-2xl font-bold text-center mb-2 text-gray-800">
           HRMS Login
@@ -51,9 +54,7 @@ const Login = () => {
 
         {/* Error */}
         {error && (
-          <p className="text-red-500 text-sm mb-4 text-center">
-            {error}
-          </p>
+          <p className="text-red-500 text-sm mb-4 text-center">{error}</p>
         )}
 
         {/* Form */}
@@ -96,7 +97,6 @@ const Login = () => {
             {loading ? "Logging in..." : "Login"}
           </button>
         </form>
-
       </div>
     </div>
   );

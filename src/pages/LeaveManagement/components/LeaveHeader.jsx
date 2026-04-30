@@ -27,10 +27,10 @@ const LeaveHeader = ({ role, onRoleChange, stats }) => {
       {/* Summary stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-5">
         {[
-          { label: 'Total Requests', value: stats.total, color: 'bg-white/20' },
-          { label: 'Pending',        value: stats.pending,         color: 'bg-yellow-400/30' },
-          { label: 'Manager Approved', value: stats.managerApproved, color: 'bg-blue-300/30' },
-          { label: 'HR Approved',    value: stats.hrApproved,      color: 'bg-green-400/30' },
+          { label: 'Total Requests', value: stats?.total || 0, color: 'bg-white/20' },
+          { label: 'Pending',        value: stats?.pending || 0, color: 'bg-yellow-400/30' },
+          { label: 'Manager Approved', value: stats?.managerApproved || 0, color: 'bg-blue-300/30' },
+          { label: 'HR Approved',    value: stats?.hrApproved || 0, color: 'bg-green-400/30' },
         ].map(({ label, value, color }) => (
           <div key={label} className={`${color} rounded-xl p-3 text-center`}>
             <p className="text-2xl font-bold">{value}</p>

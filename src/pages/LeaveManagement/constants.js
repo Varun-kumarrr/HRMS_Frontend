@@ -43,6 +43,9 @@ export const ROLE_TABS = {
   [ROLES.EMPLOYEE]: ['Overview', 'Apply Leave', 'Leave Balance', 'History'],
 };
 
+// Tab names for Leave Management page
+export const LEAVE_TABS = ['Overview', 'Apply Leave', 'Approvals', 'History', 'Balance'];
+
 // Mock employees list
 export const EMPLOYEES = [
   { id: 'E001', name: 'Rahul Kumar' },

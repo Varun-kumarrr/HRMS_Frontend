@@ -5,6 +5,7 @@ import EmployeeList from "../pages/Employees/EmployeeList";
 import TimeTracking from "../pages/TimeTracking/TimeTracking";
 import LeaveManagement from "../pages/LeaveManagement/LeaveManagement";
 import PayrollManagement from "../pages/PayrollManagement/PayrollManagement";
+import RecruitmentManagement from "../pages/RecruitmentManagement/RecruitmentManagement";
 import ProtectedRoute from "../components/ProtectedRoute";
 import EmployeeDashboard from "../pages/EmployeePanel/EmployeeDashboard";
 import Profile from "../pages/EmployeePanel/Profile";
@@ -56,6 +57,15 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <PayrollManagement />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/recruitment-management"
+        element={
+          <ProtectedRoute>
+            <RecruitmentManagement />
           </ProtectedRoute>
         }
       />

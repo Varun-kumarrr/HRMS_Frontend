@@ -11,6 +11,7 @@ const Navbar = () => {
     "/time-tracking": "Time Tracking",
     "/leave-management": "Leave Management",
     "/payroll-management": "Payroll Management",
+    "/recruitment-management": "Recruitment Management",
   };
 
   const pageTitle = titleMap[location.pathname] || "HRMS";

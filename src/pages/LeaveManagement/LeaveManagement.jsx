@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import Layout from '../../components/Layout';
-import { LEAVE_TABS, INITIAL_LEAVE_BALANCES, INITIAL_LEAVE_REQUESTS } from './constants';
+import { LEAVE_TABS, INITIAL_LEAVE_BALANCES, INITIAL_LEAVE_REQUESTS, LEAVE_TYPES, CURRENT_EMPLOYEE_ID } from './constants';
 import LeaveHeader from './components/LeaveHeader';
 import LeaveTabs from './components/LeaveTabs';
 import LeaveBalance from './components/LeaveBalance';
@@ -13,53 +13,85 @@ const LeaveManagement = () => {
   const [balances, setBalances] = useState(INITIAL_LEAVE_BALANCES);
   const [requests, setRequests] = useState(INITIAL_LEAVE_REQUESTS);
 
-  const [form, setForm] = useState({ type: 'Casual', from: '', to: '', reason: '', days: 0 });
-  const [message, setMessage] = useState('');
+  const currentEmployeeId = CURRENT_EMPLOYEE_ID;
+  const currentYear = new Date().getFullYear();
+  
+  const [form, setForm] = useState({ 
+    leaveType: LEAVE_TYPES[0], 
+    startDate: '', 
+    endDate: '', 
+    reason: '', 
+    totalDays: 0 
+  });
+  const [message, setMessage] = useState(null);
 
-  const calculateDays = (from, to) => {
-    if (!from || !to) return 0;
-    const a = new Date(from);
-    const b = new Date(to);
+  const calculateDays = (startDate, endDate) => {
+    if (!startDate || !endDate) return 0;
+    const a = new Date(startDate);
+    const b = new Date(endDate);
+    if (a > b) return 0;
     const diff = Math.round((b - a) / (1000 * 60 * 60 * 24)) + 1;
     return diff > 0 ? diff : 0;
   };
 
   const onFormChange = (key, value) => {
     const next = { ...form, [key]: value };
-    next.days = calculateDays(next.from, next.to);
+    if (key === 'startDate' || key === 'endDate') {
+      next.totalDays = calculateDays(next.startDate, next.endDate);
+    }
     setForm(next);
-    setMessage('');
+    setMessage(null);
   };
 
   const submitLeave = (e) => {
     e.preventDefault();
-    if (!form.from || !form.to || !form.reason.trim()) {
-      setMessage('Please fill all fields');
+    if (!form.startDate || !form.endDate || !form.reason.trim()) {
+      setMessage({ type: 'error', text: 'Please fill all fields' });
       return;
     }
-    if (form.days <= 0) {
-      setMessage('Please choose valid date range');
+    if (form.totalDays <= 0) {
+      setMessage({ type: 'error', text: 'Please choose valid date range' });
       return;
     }
-    if (form.days > (balances[form.type] || 0)) {
-      setMessage('Insufficient leave balance');
+    
+    const balanceRecord = balances.find(
+      b => b.employeeId === currentEmployeeId && 
+           b.leaveType === form.leaveType && 
+           b.year === currentYear
+    );
+    
+    if (!balanceRecord) {
+      setMessage({ type: 'error', text: 'Leave type not allocated' });
+      return;
+    }
+
+    if (form.totalDays > balanceRecord.remaining) {
+      setMessage({ type: 'error', text: 'Insufficient leave balance' });
       return;
     }
 
     const newReq = {
       id: Date.now(),
+      employeeId: currentEmployeeId,
       employee: 'Current Employee',
-      type: form.type,
-      from: form.from,
-      to: form.to,
-      days: form.days,
+      leaveType: form.leaveType,
+      startDate: form.startDate,
+      endDate: form.endDate,
+      totalDays: form.totalDays,
       reason: form.reason,
       status: 'Pending',
     };
 
     setRequests((p) => [newReq, ...p]);
-    setForm({ type: 'Casual', from: '', to: '', reason: '', days: 0 });
-    setMessage('Leave request submitted');
+    setBalances(p => p.map(b => 
+      b.employeeId === currentEmployeeId && 
+      b.leaveType === form.leaveType && 
+      b.year === currentYear 
+        ? { ...b, remaining: b.remaining - form.totalDays, used: b.used + form.totalDays }
+        : b
+    ));
+    setForm({ leaveType: LEAVE_TYPES[0], startDate: '', endDate: '', reason: '', totalDays: 0 });
+    setMessage({ type: 'success', text: 'Leave request submitted' });
     setActiveTab('Approvals');
   };
 
@@ -102,7 +134,14 @@ const LeaveManagement = () => {
         )}
 
         {activeTab === 'Apply Leave' && (
-          <ApplyLeaveForm form={form} onChange={onFormChange} onSubmit={submitLeave} balances={balances} message={message} />
+          <ApplyLeaveForm 
+            form={form} 
+            onChange={onFormChange} 
+            onSubmit={submitLeave} 
+            balances={balances}
+            currentEmployeeId={currentEmployeeId}
+            message={message} 
+          />
         )}
 
         {activeTab === 'Approvals' && (

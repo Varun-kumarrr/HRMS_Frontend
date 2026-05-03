@@ -1,22 +1,16 @@
 import { NavLink } from "react-router-dom";
-import { LayoutDashboard, User, CalendarCheck } from "lucide-react";
+import { LayoutDashboard, User, CalendarCheck, Contact } from "lucide-react";
 
 const EmployeeSidebar = () => {
-  
-
   return (
     <div className="w-64 bg-white shadow-lg border-r flex flex-col justify-between">
-
       {/* Top Section */}
       <div>
         {/* Logo */}
-        <div className="p-6 text-2xl font-bold text-blue-600">
-          HRMS
-        </div>
+        <div className="p-6 text-2xl font-bold text-blue-600">HRMS</div>
 
         {/* Menu */}
         <nav className="mt-4 space-y-2 px-3">
-
           {/* Dashboard */}
           <NavLink
             to="/employee-dashboard"
@@ -61,10 +55,36 @@ const EmployeeSidebar = () => {
             <CalendarCheck size={18} />
             Attendance
           </NavLink>
+          <NavLink
+            to="/contact"
+            className={({ isActive }) =>
+              `flex items-center gap-3 px-4 py-3 rounded-lg transition ${
+                isActive
+                  ? "bg-blue-100 text-blue-600 font-semibold"
+                  : "text-gray-600 hover:bg-gray-100"
+              }`
+            }
+          >
+            <Contact size={18} />
+            Contact
+          </NavLink>
+          <NavLink
+            to="/Education-Qualification"
+            className={({ isActive }) =>
+              `flex items-center gap-3 px-4 py-3 rounded-lg transition ${
+                isActive
+                  ? "bg-blue-100 text-blue-600 font-semibold"
+                  : "text-gray-600 hover:bg-gray-100"
+              }`
+            }
+          >
+            <Contact size={18} />
+            Education Qualification
+          </NavLink>
 
+          
         </nav>
       </div>
-
     </div>
   );
 };

@@ -17,9 +17,31 @@ export const loginUser = async (email, password) => {
       }
     );
 
-    return response.data;
+    const data = response.data;
+  
+    
+
+
+    return data;
+
   } catch (error) {
     console.error("Login error:", error.response);
+    throw error;
+  }
+};
+
+
+// Employee profile
+export const getEmployeeProfile = async () => {
+  try {
+    const response = await axios.get("/api/me/");
+
+    const data = response.data;
+
+    return data;
+
+  } catch (error) {
+    console.error("Employee fetch error:", error.response);
     throw error;
   }
 };

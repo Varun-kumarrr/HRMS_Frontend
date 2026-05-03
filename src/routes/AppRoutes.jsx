@@ -10,6 +10,8 @@ import ProtectedRoute from "../components/ProtectedRoute";
 import EmployeeDashboard from "../pages/EmployeePanel/EmployeeDashboard";
 import Profile from "../pages/EmployeePanel/Profile";
 import Attendance from "../pages/EmployeePanel/Attendance";
+import Contact from "../pages/EmployeePanel/Contact";
+import Education from "../pages/EmployeePanel/Education";
 
 const AppRoutes = () => {
   return (
@@ -90,12 +92,30 @@ const AppRoutes = () => {
         }
       />
 
-      {/* EMPLOYEE Attendence Route */}
+      {/* EMPLOYEE Attendance Route */}
       <Route
         path="/attendance"
         element={
           <ProtectedRoute role="employee">
             <Attendance />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/contact"
+        element={
+          <ProtectedRoute role="employee">
+            <Contact />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/Education-Qualification"
+        element={
+          <ProtectedRoute role="employee">
+            <Education />
           </ProtectedRoute>
         }
       />

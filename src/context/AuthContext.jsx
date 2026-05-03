@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useEffect } from "react";
 import { loginUser } from "../services/authService";
 
 // 🔥 Toggle between MOCK and REAL API
-const USE_MOCK_AUTH = false;
+const USE_MOCK_AUTH = true; // ✅ Enable MOCK for testing - disable when backend API is ready
 
 const MOCK_USERS = [
   { email: "admin@hrms.com", password: "admin123", role: "admin", employeeId: "HR001" },
@@ -31,30 +31,19 @@ export const AuthProvider = ({ children }) => {
   // 🔐 LOGIN FUNCTION
   const login = async (email, password) => {
     if (USE_MOCK_AUTH) {
-      // ADMIN
-      if (email === "admin@hrms.com" && password === "admin123") {
+      // Check against MOCK_USERS array - better approach
+      const user = MOCK_USERS.find(u => u.email === email && u.password === password);
+      
+      if (user) {
         const fakeUser = {
-          email,
-          role: "admin",
+          email: user.email,
+          role: user.role,
+          employeeId: user.employeeId,
         };
-
         localStorage.setItem("user", JSON.stringify(fakeUser));
         setUser(fakeUser);
         return true;
       }
-
-      // EMPLOYEE
-      if (email === "employee@hrms.com" && password === "employee123") {
-        const fakeUser = {
-          email,
-          role: "employee",
-        };
-
-        localStorage.setItem("user", JSON.stringify(fakeUser));
-        setUser(fakeUser);
-        return true;
-      }
-
       return false;
     }
 

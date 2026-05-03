@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useEffect } from "react";
 import { loginUser } from "../services/authService";
 
 // 🔥 Toggle between MOCK and REAL API
-const USE_MOCK_AUTH = true;
+const USE_MOCK_AUTH = false;
 
 const AuthContext = createContext();
 
@@ -23,8 +23,8 @@ export const AuthProvider = ({ children }) => {
 
   // 🔐 LOGIN FUNCTION
   const login = async (email, password) => {
-    // 🔥 MOCK LOGIN
     if (USE_MOCK_AUTH) {
+      // ADMIN
       if (email === "admin@hrms.com" && password === "admin123") {
         const fakeUser = {
           email,
@@ -33,32 +33,36 @@ export const AuthProvider = ({ children }) => {
 
         localStorage.setItem("user", JSON.stringify(fakeUser));
         setUser(fakeUser);
-
         return true;
       }
 
-       // EMPLOYEE LOGIN
-  if (email === "employee@hrms.com" && password === "employee123") {
-    const fakeUser = {
-      email,
-      role: "employee",
-    };
+      // EMPLOYEE
+      if (email === "employee@hrms.com" && password === "employee123") {
+        const fakeUser = {
+          email,
+          role: "employee",
+        };
 
-    localStorage.setItem("user", JSON.stringify(fakeUser));
-    setUser(fakeUser);
-    return true;
-  }
+        localStorage.setItem("user", JSON.stringify(fakeUser));
+        setUser(fakeUser);
+        return true;
+      }
 
       return false;
     }
 
     // 🔥 REAL API LOGIN
     try {
-      const response = await loginUser(email, password);
-      const data = response.data;
+      const data = await loginUser(email, password);
 
-      localStorage.setItem("user", JSON.stringify(data));
-      setUser(data);
+      const user = data.user || data;
+      if (!user) {
+        throw new Error("User data not found");
+      }
+      const token = data.access;
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
+      setUser(user);
 
       return true;
     } catch (error) {
@@ -70,16 +74,24 @@ export const AuthProvider = ({ children }) => {
   // 🚪 LOGOUT FUNCTION
   const logout = () => {
     localStorage.removeItem("user");
+    localStorage.removeItem("token");
     setUser(null);
   };
 
-  // ⏳ Prevent UI flicker before auth check
+  // ⏳ Prevent UI flicker
   if (loading) {
     return <div className="text-center mt-10">Loading...</div>;
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        setUser,
+        login,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

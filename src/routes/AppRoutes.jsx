@@ -6,6 +6,9 @@ import ProtectedRoute from "../components/ProtectedRoute";
 import EmployeeDashboard from "../pages/EmployeePanel/EmployeeDashboard";
 import Profile from "../pages/EmployeePanel/Profile";
 import Attendance from "../pages/EmployeePanel/Attendance";
+import Contact from "../pages/EmployeePanel/Contact";
+import Education from "../pages/EmployeePanel/Education";
+
 const AppRoutes = () => {
   return (
     <Routes>
@@ -57,6 +60,23 @@ const AppRoutes = () => {
     </ProtectedRoute>
   }
 />
+
+  <Route
+  path="/contact"
+  element={
+    <ProtectedRoute role="employee">
+      <Contact/>
+    </ProtectedRoute>
+  }
+  />
+  <Route
+  path="/Education-Qualification"
+    element={
+      <ProtectedRoute role="employee">
+        <Education/>
+      </ProtectedRoute>
+    }
+  />
     </Routes>
   );
 };

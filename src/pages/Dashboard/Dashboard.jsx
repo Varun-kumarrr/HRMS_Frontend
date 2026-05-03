@@ -1,15 +1,7 @@
-import { useEffect } from "react";
 import Layout from "../../components/Layout";
 import { Users, Activity, Clock } from "lucide-react";
 
 const Dashboard = () => {
-
-useEffect(async ()=>{
-     const data= await axios.get("/api/me/");
-     console.log(data);
-     
-},[])
-
   return (
     <Layout>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "https://hrms-6639.onrender.com/api/$1"
+    }
+  ]
+}

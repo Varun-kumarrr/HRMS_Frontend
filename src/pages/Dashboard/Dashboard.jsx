@@ -1,14 +1,21 @@
 import { useEffect } from "react";
 import Layout from "../../components/Layout";
 import { Users, Activity, Clock } from "lucide-react";
+import axios from "axios";
 
 const Dashboard = () => {
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const res = await axios.get("/api/auth/login/");
+      console.log(res.data);
+    } catch (error) {
+      console.log("Error fetching user:", error);
+    }
+  };
 
-useEffect(async ()=>{
-     const data= await axios.get("/api/me/");
-     console.log(data);
-     
-},[])
+  fetchData();
+}, []);
 
   return (
     <Layout>

@@ -4,23 +4,17 @@ const API_URL = "/api/auth/login/";
 
 export const loginUser = async (email, password) => {
   try {
-    const response = await axios.post(
-      API_URL,
-      {
-        email,
-        password,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await axios.post("/api/auth/login/", {
+      email,
+      password,
+    });
 
     const data = response.data;
-  
-    
 
+    // 🔥 IMPORTANT
+    if (data.access) {
+      localStorage.setItem("token", data.access);
+    }
 
     return data;
 

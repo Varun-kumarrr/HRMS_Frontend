@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // base URL
-axios.defaults.baseURL = "";
+axios.defaults.baseURL = "https://hrms-6639.onrender.com";
 
 // token auto attach
 axios.interceptors.request.use((config) => {

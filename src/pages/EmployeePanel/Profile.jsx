@@ -1,41 +1,50 @@
 import Layout from "../../components/Layout";
 import { useAuth } from "../../context/AuthContext";
 import { useState, useEffect } from "react";
+import axios from "axios";
 
 const Profile = () => {
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
 
   const [isEditing, setIsEditing] = useState(false);
+
   const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [location, setLocation] = useState("");
   const [photo, setPhoto] = useState("");
 
-useEffect(() => {
-  if (!user) return;
+  // 🔥 Load initial data
+  useEffect(() => {
+    if (!user) return;
 
-  const storedData = localStorage.getItem(`profile_${user.email}`);
-  const storedProfile = storedData ? JSON.parse(storedData) : null;
+    setName(user.first_name || "");
+    setPhone(user.phone || "");
+    setLocation(user.location || "");
+  }, [user]);
 
-  if (storedProfile) {
-    setName(storedProfile.name);
-    setPhoto(storedProfile.photo);
-  } else {
-    setName(user.email.split("@")[0]);
-    setPhoto("");
-  }
-}, [user]);
+  // 🔥 Save (PATCH API)
+  const handleSave = async () => {
+    try {
+      await axios.patch("/api/me/", {
+        first_name: name,
+        phone: phone,
+        location: location,
+      });
 
-  // Save function
-const handleSave = () => {
-  localStorage.setItem(
-    `profile_${user.email}`,
-    JSON.stringify({ name, photo })
-  );
+      // 🔥 refresh user
+      const res = await axios.get("/api/me/");
+      setUser(res.data);
 
-  setIsEditing(false);
-  alert("Profile updated successfully");
-};
+      setIsEditing(false);
+      alert("Profile updated successfully");
 
-  // Image convert to base64
+    } catch (error) {
+      console.log(error.response?.data || error.message);
+      alert("Update failed");
+    }
+  };
+
+  // 🔥 Image preview only
   const handleImageChange = (file) => {
     const reader = new FileReader();
     reader.onloadend = () => {
@@ -50,6 +59,7 @@ const handleSave = () => {
         <h1 className="text-2xl font-semibold mb-6">My Profile</h1>
 
         <div className="bg-white p-6 rounded-2xl shadow">
+
           {/* Avatar */}
           <div className="flex items-center gap-4 mb-6">
             <div className="w-16 h-16">
@@ -87,6 +97,16 @@ const handleSave = () => {
             </div>
 
             <div>
+              <label className="text-sm text-gray-500">Phone</label>
+              <p className="font-medium">{phone || "Not set"}</p>
+            </div>
+
+            <div>
+              <label className="text-sm text-gray-500">Location</label>
+              <p className="font-medium">{location || "Not set"}</p>
+            </div>
+
+            <div>
               <label className="text-sm text-gray-500">Role</label>
               <p className="font-medium capitalize">{user?.role}</p>
             </div>
@@ -113,6 +133,7 @@ const handleSave = () => {
                 <h2 className="text-xl font-semibold mb-6">Edit Profile</h2>
 
                 <div className="space-y-4">
+
                   {/* Name */}
                   <div>
                     <label className="text-sm text-gray-500">Full Name</label>
@@ -120,7 +141,29 @@ const handleSave = () => {
                       type="text"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      className="w-full p-3 border rounded-lg mt-1 focus:ring-2 focus:ring-blue-500 outline-none"
+                      className="w-full p-3 border rounded-lg mt-1"
+                    />
+                  </div>
+
+                  {/* Phone */}
+                  <div>
+                    <label className="text-sm text-gray-500">Phone</label>
+                    <input
+                      type="text"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      className="w-full p-3 border rounded-lg mt-1"
+                    />
+                  </div>
+
+                  {/* Location */}
+                  <div>
+                    <label className="text-sm text-gray-500">Location</label>
+                    <input
+                      type="text"
+                      value={location}
+                      onChange={(e) => setLocation(e.target.value)}
+                      className="w-full p-3 border rounded-lg mt-1"
                     />
                   </div>
 
@@ -142,7 +185,7 @@ const handleSave = () => {
                       type="text"
                       value={user?.role}
                       disabled
-                      className="w-full p-3 border rounded-lg mt-1 bg-gray-100 capitalize"
+                      className="w-full p-3 border rounded-lg mt-1 bg-gray-100"
                     />
                   </div>
 
@@ -154,31 +197,35 @@ const handleSave = () => {
                     <input
                       type="file"
                       accept="image/*"
-                      onChange={(e) => handleImageChange(e.target.files[0])}
-                      className="w-full mt-1"
+                      onChange={(e) =>
+                        handleImageChange(e.target.files[0])
+                      }
                     />
                   </div>
+
                 </div>
 
                 {/* Buttons */}
                 <div className="flex justify-end gap-3 mt-6">
                   <button
                     onClick={() => setIsEditing(false)}
-                    className="px-4 py-2 rounded-lg bg-gray-200"
+                    className="px-4 py-2 bg-gray-200 rounded-lg"
                   >
                     Cancel
                   </button>
 
                   <button
                     onClick={handleSave}
-                    className="px-4 py-2 rounded-lg bg-blue-600 text-white"
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg"
                   >
                     Save Changes
                   </button>
                 </div>
+
               </div>
             </div>
           )}
+
         </div>
       </div>
     </Layout>

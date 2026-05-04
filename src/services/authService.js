@@ -4,44 +4,40 @@ const API_URL = "/api/auth/login/";
 
 export const loginUser = async (email, password) => {
   try {
-    const response = await axios.post(
-      API_URL,
-      {
-        email,
-        password,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await axios.post("/api/auth/login/", {
+      email: email,     // 🔥 correct field
+      password: password,
+    });
 
     const data = response.data;
-  
-    
 
+    if (data.access) {
+      localStorage.setItem("token", data.access);
+    }
 
     return data;
 
   } catch (error) {
-    console.error("Login error:", error.response);
+    console.error("Login error:", error.response?.data);
     throw error;
   }
 };
 
-
 // Employee profile
 export const getEmployeeProfile = async () => {
   try {
-    const response = await axios.get("/api/me/");
+    const token = localStorage.getItem("token"); // 🔥 missing tha
 
-    const data = response.data;
+    const response = await axios.get("/api/me/", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-    return data;
+    return response.data;
 
   } catch (error) {
-    console.error("Employee fetch error:", error.response);
+    console.error("Employee fetch error:", error.response?.data);
     throw error;
   }
 };

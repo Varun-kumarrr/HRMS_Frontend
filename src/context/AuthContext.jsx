@@ -4,6 +4,13 @@ import { loginUser } from "../services/authService";
 // 🔥 Toggle between MOCK and REAL API
 const USE_MOCK_AUTH = false;
 
+const MOCK_USERS = [
+  { email: "admin@hrms.com", password: "admin123", role: "admin", employeeId: "HR001" },
+  { email: "hr@hrms.com", password: "hr123", role: "hr", employeeId: "HR001" },
+  { email: "manager@hrms.com", password: "manager123", role: "manager", employeeId: "MGR001" },
+  { email: "employee@hrms.com", password: "employee123", role: "employee", employeeId: "EMP001" },
+];
+
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {

@@ -1,10 +1,10 @@
 import axios from "axios";
 
-const API_URL = "/api/auth/login/";
+const API = "https://hrms-6639.onrender.com";
 
 export const loginUser = async (email, password) => {
   try {
-    const response = await axios.post("/api/auth/login/", {
+    const response = await axios.post(`${API}/api/auth/login/`, {
       email: email,     // 🔥 correct field
       password: password,
     });

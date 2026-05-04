@@ -28,7 +28,7 @@ export const getEmployeeProfile = async () => {
   try {
     const token = localStorage.getItem("token"); // 🔥 missing tha
 
-    const response = await axios.get("/api/me/", {
+    const response = await axios.get(`${API}/api/me/`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

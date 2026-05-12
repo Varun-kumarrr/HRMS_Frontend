@@ -1,15 +1,26 @@
 import axios from "axios";
 
-// base URL
-axios.defaults.baseURL = "";
+const axiosInstance = axios.create({
+  baseURL: "https://hrms-6639.onrender.com",
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
 
 // token auto attach
-axios.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
 
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
   }
+);
 
-  return config;
-});
+export default axiosInstance;

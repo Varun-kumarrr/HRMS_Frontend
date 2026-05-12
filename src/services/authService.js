@@ -1,47 +1,24 @@
-import axios from "axios";
-
-const API_URL = "/api/auth/login/";
+import axiosInstance from "./axiosConfig";
 
 export const loginUser = async (email, password) => {
   try {
-    const response = await axios.post(
-      API_URL,
-      {
-        email,
-        password,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    const data = response.data;
-  
-    
-
-
-    return data;
-
+    const response = await axiosInstance.post("/api/token/", {
+      email,
+      password,
+    });
+    return response.data;
   } catch (error) {
-    console.error("Login error:", error.response);
+    console.error("Login error:", error.response?.data || error.message);
     throw error;
   }
 };
 
-
-// Employee profile
 export const getEmployeeProfile = async () => {
   try {
-    const response = await axios.get("/api/me/");
-
-    const data = response.data;
-
-    return data;
-
+    const response = await axiosInstance.get("/api/me/");
+    return response.data;
   } catch (error) {
-    console.error("Employee fetch error:", error.response);
+    console.error("Employee fetch error:", error.response?.data || error.message);
     throw error;
   }
 };

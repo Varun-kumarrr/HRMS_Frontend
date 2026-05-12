@@ -31,10 +31,13 @@ const Login = () => {
 
     if (success) {
       const user = JSON.parse(localStorage.getItem("user"));
+      console.log("NAVIGATING FOR ROLE:", user?.role);
 
-      user.role === "admin"
-        ? navigate("/dashboard")
-        : navigate("/employee-dashboard");
+      if (user?.role === "admin" || user?.role === "hr" || user?.role === "manager") {
+        navigate("/dashboard");
+      } else {
+        navigate("/employee-dashboard");
+      }
     } else {
       setError("Invalid email or password");
     }
@@ -43,7 +46,7 @@ const Login = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-gray-100">
       <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-gray-100">
-        {/* Title */}
+
         <h2 className="text-2xl font-bold text-center mb-2 text-gray-800">
           HRMS Login
         </h2>
@@ -52,19 +55,16 @@ const Login = () => {
           Welcome back! Please login to your account
         </p>
 
-        {/* Error */}
         {error && (
           <p className="text-red-500 text-sm mb-4 text-center">{error}</p>
         )}
 
-        {/* Form */}
         <form
           onSubmit={(e) => {
             e.preventDefault();
             handleLogin();
           }}
         >
-          {/* Email */}
           <input
             type="email"
             placeholder="Enter email"
@@ -76,7 +76,6 @@ const Login = () => {
             className="w-full p-3 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
 
-          {/* Password */}
           <input
             type="password"
             placeholder="Enter password"
@@ -88,7 +87,6 @@ const Login = () => {
             className="w-full p-3 border border-gray-300 rounded-lg mb-6 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
 
-          {/* Button */}
           <button
             type="submit"
             disabled={loading}

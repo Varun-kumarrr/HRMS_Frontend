@@ -5,9 +5,14 @@ import EmployeeSidebar from "./EmployeeSidebar";
 
 const Layout = ({ children }) => {
   const { user } = useAuth();
+
+  const role = user?.role?.toLowerCase();
+
+  const isStaff = role === "admin" || role === "hr" || role === "manager";
+
   return (
     <div className="flex h-screen bg-gray-100">
-      {user?.role === "admin" ? <Sidebar /> : <EmployeeSidebar />}
+      {isStaff ? <Sidebar /> : <EmployeeSidebar />}
 
       <div className="flex-1 flex flex-col">
         <Navbar />

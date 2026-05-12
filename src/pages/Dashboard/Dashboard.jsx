@@ -1,14 +1,21 @@
 import { useEffect } from "react";
 import Layout from "../../components/Layout";
 import { Users, Activity, Clock } from "lucide-react";
+import { getEmployeeProfile } from "../../services/authService";
 
 const Dashboard = () => {
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const data = await getEmployeeProfile();
+        console.log("Employee profile:", data);
+      } catch (error) {
+        console.error("Profile fetch failed:", error);
+      }
+    };
 
-useEffect(async ()=>{
-     const data= await axios.get("/api/me/");
-     console.log(data);
-     
-},[])
+    fetchProfile();
+  }, []);
 
   return (
     <Layout>

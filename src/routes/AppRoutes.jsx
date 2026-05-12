@@ -1,23 +1,43 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "../pages/Auth/Login";
-import Dashboard from "../pages/Dashboard/Dashboard";
-import EmployeeList from "../pages/Employees/EmployeeList";
-import TimeTracking from "../pages/TimeTracking/TimeTracking";
-import LeaveManagement from "../pages/LeaveManagement/LeaveManagement";
-import PayrollManagement from "../pages/PayrollManagement/PayrollManagement";
-import RecruitmentManagement from "../pages/RecruitmentManagement/RecruitmentManagement";
 import ProtectedRoute from "../components/ProtectedRoute";
+import { useAuth } from "../context/AuthContext";
+
+import Dashboard from "../pages/Dashboard/Dashboard";
 import EmployeeDashboard from "../pages/EmployeePanel/EmployeeDashboard";
 import Profile from "../pages/EmployeePanel/Profile";
 import Attendance from "../pages/EmployeePanel/Attendance";
 import Contact from "../pages/EmployeePanel/Contact";
 import Education from "../pages/EmployeePanel/Education";
 
+import EmployeeList from "../pages/Employees/EmployeeList";
+import LeaveManagement from "../pages/LeaveManagement/LeaveManagement";
+import PayrollManagement from "../pages/PayrollManagement/PayrollManagement";
+import RecruitmentManagement from "../pages/RecruitmentManagement/RecruitmentManagement";
+import TimeTracking from "../pages/TimeTracking/TimeTracking";
+
 const AppRoutes = () => {
+  const { user } = useAuth();
+
+  const getHomeRoute = () => {
+    const role = user?.role?.toLowerCase();
+
+    if (role === "admin" || role === "hr" || role === "manager") {
+      return "/dashboard";
+    }
+
+    return "/employee-dashboard";
+  };
+
   return (
     <Routes>
-      <Route path="/" element={<Login />} />
+      {/* Public Login Route */}
+      <Route
+        path="/"
+        element={user ? <Navigate to={getHomeRoute()} replace /> : <Login />}
+      />
 
+      {/* Admin / HR / Manager Dashboard */}
       <Route
         path="/dashboard"
         element={
@@ -27,20 +47,59 @@ const AppRoutes = () => {
         }
       />
 
+      {/* Employee Dashboard */}
       <Route
-        path="/employees"
+        path="/employee-dashboard"
         element={
           <ProtectedRoute>
-            <EmployeeList />
+            <EmployeeDashboard />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Employee Panel */}
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute>
+            <Profile />
           </ProtectedRoute>
         }
       />
 
       <Route
-        path="/time-tracking"
+        path="/attendance"
         element={
           <ProtectedRoute>
-            <TimeTracking />
+            <Attendance />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/contact"
+        element={
+          <ProtectedRoute>
+            <Contact />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/education-qualification"
+        element={
+          <ProtectedRoute>
+            <Education />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Admin / HR / Manager Pages */}
+      <Route
+        path="/employees"
+        element={
+          <ProtectedRoute>
+            <EmployeeList />
           </ProtectedRoute>
         }
       />
@@ -72,52 +131,19 @@ const AppRoutes = () => {
         }
       />
 
-      {/* EMPLOYEE ROUTE */}
       <Route
-        path="/employee-dashboard"
+        path="/time-tracking"
         element={
-          <ProtectedRoute role="employee">
-            <EmployeeDashboard />
+          <ProtectedRoute>
+            <TimeTracking />
           </ProtectedRoute>
         }
       />
 
-      {/* EMPLOYEE PROFILE ROUTE */}
+      {/* Fallback Route */}
       <Route
-        path="/profile"
-        element={
-          <ProtectedRoute role="employee">
-            <Profile />
-          </ProtectedRoute>
-        }
-      />
-
-      {/* EMPLOYEE Attendance Route */}
-      <Route
-        path="/attendance"
-        element={
-          <ProtectedRoute role="employee">
-            <Attendance />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/contact"
-        element={
-          <ProtectedRoute role="employee">
-            <Contact />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/Education-Qualification"
-        element={
-          <ProtectedRoute role="employee">
-            <Education />
-          </ProtectedRoute>
-        }
+        path="*"
+        element={<Navigate to={user ? getHomeRoute() : "/"} replace />}
       />
     </Routes>
   );

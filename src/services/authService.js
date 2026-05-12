@@ -7,33 +7,19 @@ export const loginUser = async (email, password) => {
       password,
     });
 
-    const data = response.data;
-
-    return data;
+    return response.data;
   } catch (error) {
-    console.error("Login error:", error.response?.data || error.message);
+    console.error("Login error:", error.response || error);
     throw error;
   }
 };
 
-// Employee profile
 export const getEmployeeProfile = async () => {
   try {
     const response = await axiosInstance.get("/api/me/");
     return response.data;
   } catch (error) {
-    console.error("Employee fetch error:", error.response?.data || error.message);
-    throw error;
-  }
-};
-
-// Edit employee profile
-export const updateEmployeeProfile = async (employeeData) => {
-  try {
-    const response = await axiosInstance.patch("/api/me/", employeeData);
-    return response.data;
-  } catch (error) {
-    console.error("Employee update error:", error.response?.data || error.message);
+    console.error("Employee fetch error:", error.response || error);
     throw error;
   }
 };

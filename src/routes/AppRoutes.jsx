@@ -15,6 +15,7 @@ import LeaveManagement from "../pages/LeaveManagement/LeaveManagement";
 import PayrollManagement from "../pages/PayrollManagement/PayrollManagement";
 import RecruitmentManagement from "../pages/RecruitmentManagement/RecruitmentManagement";
 import TimeTracking from "../pages/TimeTracking/TimeTracking";
+import CreateEmployee from "../pages/Employees/CreateEmployee";
 
 const AppRoutes = () => {
   const { user } = useAuth();
@@ -66,7 +67,14 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
-
+      <Route
+        path="/create-employee"
+        element={
+          <ProtectedRoute>
+            <CreateEmployee />
+          </ProtectedRoute>
+        }
+      />
       <Route
         path="/attendance"
         element={

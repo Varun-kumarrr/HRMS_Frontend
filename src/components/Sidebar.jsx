@@ -1,104 +1,80 @@
 import { NavLink } from "react-router-dom";
-import { LayoutDashboard, Users, Clock3, CalendarCheck, Calculator, Briefcase } from "lucide-react";
+import {
+  LayoutDashboard,
+  Users,
+  Clock,
+  CalendarDays,
+  Calculator,
+  Briefcase,
+  UserPlus,
+} from "lucide-react";
 
 const Sidebar = () => {
+  const menuItems = [
+    {
+      name: "Dashboard",
+      path: "/dashboard",
+      icon: LayoutDashboard,
+    },
+    {
+      name: "Employees",
+      path: "/employees",
+      icon: Users,
+    },
+    {
+      name: "Time Tracking",
+      path: "/time-tracking",
+      icon: Clock,
+    },
+    {
+      name: "Create HR",
+      path: "/create-employee",
+      icon: UserPlus,
+    },
+    {
+      name: "Leave Management",
+      path: "/leave-management",
+      icon: CalendarDays,
+    },
+    {
+      name: "Payroll Management",
+      path: "/payroll-management",
+      icon: Calculator,
+    },
+    {
+      name: "Recruitment",
+      path: "/recruitment",
+      icon: Briefcase,
+    },
+  ];
+
   return (
-    <div className="w-64 bg-white shadow-lg border-r">
+    <aside className="w-64 min-h-screen bg-white border-r border-gray-200 px-4 py-6">
+      <h1 className="text-2xl font-bold text-blue-600 mb-10">HRMS</h1>
 
-      {/* Logo */}
-      <div className="p-6 text-2xl font-bold text-blue-600">
-        HRMS
-      </div>
+      <nav className="space-y-2">
+        {menuItems.map((item) => {
+          const Icon = item.icon;
 
-      {/* Menu */}
-      <nav className="mt-4 space-y-2 px-3">
-
-        <NavLink
-          to="/dashboard"
-          className={({ isActive }) =>
-            `flex items-center gap-3 px-4 py-3 rounded-lg transition ${
-              isActive
-                ? "bg-blue-100 text-blue-600 font-semibold"
-                : "text-gray-600 hover:bg-gray-100"
-            }`
-          }
-        >
-          <LayoutDashboard size={18} />
-          Dashboard
-        </NavLink>
-
-        <NavLink
-          to="/employees"
-          className={({ isActive }) =>
-            `flex items-center gap-3 px-4 py-3 rounded-lg transition ${
-              isActive
-                ? "bg-blue-100 text-blue-600 font-semibold"
-                : "text-gray-600 hover:bg-gray-100"
-            }`
-          }
-        >
-          <Users size={18} />
-          Employees
-        </NavLink>
-
-        <NavLink
-          to="/time-tracking"
-          className={({ isActive }) =>
-            `flex items-center gap-3 px-4 py-3 rounded-lg transition ${
-              isActive
-                ? "bg-blue-100 text-blue-600 font-semibold"
-                : "text-gray-600 hover:bg-gray-100"
-            }`
-          }
-        >
-          <Clock3 size={18} />
-          Time Tracking
-        </NavLink>
-
-        <NavLink
-          to="/leave-management"
-          className={({ isActive }) =>
-            `flex items-center gap-3 px-4 py-3 rounded-lg transition ${
-              isActive
-                ? "bg-blue-100 text-blue-600 font-semibold"
-                : "text-gray-600 hover:bg-gray-100"
-            }`
-          }
-        >
-          <CalendarCheck size={18} />
-          Leave Management
-        </NavLink>
-
-        <NavLink
-          to="/payroll-management"
-          className={({ isActive }) =>
-            `flex items-center gap-3 px-4 py-3 rounded-lg transition ${
-              isActive
-                ? "bg-blue-100 text-blue-600 font-semibold"
-                : "text-gray-600 hover:bg-gray-100"
-            }`
-          }
-        >
-          <Calculator size={18} />
-          Payroll Management
-        </NavLink>
-
-        <NavLink
-          to="/recruitment-management"
-          className={({ isActive }) =>
-            `flex items-center gap-3 px-4 py-3 rounded-lg transition ${
-              isActive
-                ? "bg-blue-100 text-blue-600 font-semibold"
-                : "text-gray-600 hover:bg-gray-100"
-            }`
-          }
-        >
-          <Briefcase size={18} />
-          Recruitment
-        </NavLink>
-
+          return (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition ${
+                  isActive
+                    ? "bg-blue-100 text-blue-600"
+                    : "text-gray-600 hover:bg-gray-100"
+                }`
+              }
+            >
+              <Icon size={18} />
+              {item.name}
+            </NavLink>
+          );
+        })}
       </nav>
-    </div>
+    </aside>
   );
 };
 

@@ -29,10 +29,7 @@ const Login = () => {
     setLoading(true);
     setError("");
 
-    const result = await login(
-      formData.email.trim(),
-      formData.password.trim()
-    );
+    const result = await login(formData.email.trim(), formData.password.trim());
 
     setLoading(false);
 

@@ -1,68 +1,50 @@
-import axiosInstance from "./axiosConfig";
+import axiosInstance from "./axiosInstance";
 
-// Employees
-export const getAdminEmployees = async () => {
-  const response = await axiosInstance.get("/api/admin/employees/");
+// LOGIN
+export const loginUser = async (email, password) => {
+  try {
+    const response = await axiosInstance.post("/api/auth/login/", {
+      email,
+      password,
+    });
+
+    return response.data;
+  } catch (error) {
+    console.log("Login error status:", error.response?.status);
+    console.log("Login error data:", error.response?.data);
+    console.log("Login error full:", error);
+
+    throw error;
+  }
+};
+
+// LOGOUT
+export const logoutUser = async () => {
+  try {
+    const refreshToken = localStorage.getItem("refreshToken");
+
+    if (refreshToken) {
+      await axiosInstance.post("/api/auth/logout/", {
+        refresh: refreshToken,
+      });
+    }
+  } catch (error) {
+    console.log("Logout API error:", error.response?.data || error.message);
+  } finally {
+    localStorage.removeItem("token");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("user");
+  }
+};
+
+// CURRENT EMPLOYEE PROFILE
+export const getEmployeeProfile = async () => {
+  const response = await axiosInstance.get("/api/me/");
   return response.data;
 };
 
-export const createEmployee = async (employeeData) => {
-  const response = await axiosInstance.post("/api/create_employee/", employeeData);
-  return response.data;
-};
-
-// Departments
-export const getDepartments = async () => {
-  const response = await axiosInstance.get("/api/departments/");
-  return response.data;
-};
-
-export const createDepartment = async (departmentData) => {
-  const response = await axiosInstance.post("/api/departments/", departmentData);
-  return response.data;
-};
-
-export const updateDepartment = async (id, departmentData) => {
-  const response = await axiosInstance.patch(`/api/departments/${id}/`, departmentData);
-  return response.data;
-};
-
-export const deleteDepartment = async (id) => {
-  const response = await axiosInstance.delete(`/api/departments/${id}/`);
-  return response.data;
-};
-
-// Designations
-export const getDesignations = async () => {
-  const response = await axiosInstance.get("/api/designations/");
-  return response.data;
-};
-
-export const createDesignation = async (designationData) => {
-  const response = await axiosInstance.post("/api/designations/", designationData);
-  return response.data;
-};
-
-export const updateDesignation = async (id, designationData) => {
-  const response = await axiosInstance.patch(`/api/designations/${id}/`, designationData);
-  return response.data;
-};
-
-export const deleteDesignation = async (id) => {
-  const response = await axiosInstance.delete(`/api/designations/${id}/`);
-  return response.data;
-};
-
-// Users / Password
-export const getUsers = async () => {
-  const response = await axiosInstance.get("/api/auth/users/");
-  return response.data;
-};
-
-export const setUserPassword = async (passwordData) => {
-  const response = await axiosInstance.post(
-    "/api/auth/admin/set-password/",
-    passwordData
-  );
+// UPDATE CURRENT EMPLOYEE PROFILE
+export const updateEmployeeProfile = async (data) => {
+  const response = await axiosInstance.patch("/api/me/", data);
   return response.data;
 };

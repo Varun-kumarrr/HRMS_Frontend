@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }) => {
     if (savedUser) {
       try {
         setUser(JSON.parse(savedUser));
-      } catch {
+      } catch (error) {
         localStorage.removeItem("user");
       }
     }
@@ -47,10 +47,9 @@ export const AuthProvider = ({ children }) => {
         "";
 
       if (!accessToken) {
-        console.log("No access token found in response:", data);
         return {
           success: false,
-          message: "Login successful but token not found in response.",
+          message: "Login successful but access token not found.",
         };
       }
 
@@ -72,7 +71,7 @@ export const AuthProvider = ({ children }) => {
         user: loggedInUser,
       };
     } catch (error) {
-      console.log("Login failed:", error);
+      console.log("Login failed:", error.response?.data || error.message);
 
       return {
         success: false,

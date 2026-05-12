@@ -7,7 +7,7 @@ const axiosInstance = axios.create({
   },
 });
 
-// Attach token automatically for protected APIs
+// Automatically attach token to every protected request
 axiosInstance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");

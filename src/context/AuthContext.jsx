@@ -1,156 +1,109 @@
-import { createContext, useContext, useState, useEffect } from "react";
-import { loginUser } from "../services/authService";
+import { createContext, useContext, useEffect, useState } from "react";
+import { loginUser, logoutUser } from "../services/authService";
 
-// false = real API login
-// true = fake login
-const USE_MOCK_AUTH = false;
-
-const AuthContext = createContext();
+const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Restore user on page refresh
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
+    const savedToken = localStorage.getItem("token");
+    const savedUser = localStorage.getItem("user");
 
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+    if (savedToken) {
+      setToken(savedToken);
+    }
+
+    if (savedUser) {
+      try {
+        setUser(JSON.parse(savedUser));
+      } catch {
+        localStorage.removeItem("user");
+      }
     }
 
     setLoading(false);
   }, []);
 
-  // Login function
   const login = async (email, password) => {
-    // Fake login mode
-    if (USE_MOCK_AUTH) {
-      let fakeUser = null;
-
-      if (email === "admin@hrms.com" && password === "admin123") {
-        fakeUser = {
-          email,
-          role: "admin",
-        };
-      } else if (email === "hr2@hrms.com" && password === "password") {
-        fakeUser = {
-          email,
-          role: "hr",
-        };
-      } else if (email === "manager@hrms.com" && password === "password") {
-        fakeUser = {
-          email,
-          role: "manager",
-        };
-      } else if (email === "employee@hrms.com" && password === "password") {
-        fakeUser = {
-          email,
-          role: "employee",
-        };
-      }
-
-      if (!fakeUser) {
-        return false;
-      }
-
-      localStorage.setItem("user", JSON.stringify(fakeUser));
-      localStorage.setItem("token", "fake-token");
-      setUser(fakeUser);
-
-      return true;
-    }
-
-    // Real API login
     try {
       const data = await loginUser(email, password);
 
-      console.log("Login response:", data);
+      console.log("Login success data:", data);
 
-      // Backend may return token in different keys
-      const token =
+      const accessToken =
         data.access ||
         data.token ||
-        data?.tokens?.access ||
-        data?.data?.access ||
-        data?.data?.token;
+        data.access_token ||
+        data.jwt ||
+        data.tokens?.access;
 
-      if (!token) {
-        console.error("Token not found in login response:", data);
-        throw new Error("Token not found in login response");
-      }
+      const refreshToken =
+        data.refresh ||
+        data.refresh_token ||
+        data.tokens?.refresh ||
+        "";
 
-      localStorage.setItem("token", token);
-
-      // Backend may return user directly or inside user key
-      let loggedInUser =
-        data.user ||
-        data.data?.user ||
-        data.employee ||
-        null;
-
-      // If backend does not return user, create user using email
-      if (!loggedInUser) {
-        let role = "employee";
-
-        if (email === "admin@hrms.com") {
-          role = "admin";
-        } else if (email === "hr2@hrms.com") {
-          role = "hr";
-        } else if (email === "manager@hrms.com") {
-          role = "manager";
-        } else if (email === "employee@hrms.com") {
-          role = "employee";
-        }
-
-        loggedInUser = {
-          email,
-          role,
+      if (!accessToken) {
+        console.log("No access token found in response:", data);
+        return {
+          success: false,
+          message: "Login successful but token not found in response.",
         };
       }
 
-      // Normalize role
-      loggedInUser = {
-        ...loggedInUser,
-        email: loggedInUser.email || email,
-        role: (loggedInUser.role || "employee").toLowerCase(),
-      };
+      const loggedInUser =
+        data.user || {
+          email,
+          role: data.role || "admin",
+        };
 
+      localStorage.setItem("token", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
       localStorage.setItem("user", JSON.stringify(loggedInUser));
+
+      setToken(accessToken);
       setUser(loggedInUser);
 
-      return true;
+      return {
+        success: true,
+        user: loggedInUser,
+      };
     } catch (error) {
-      console.error("Login failed:", error);
-      return false;
+      console.log("Login failed:", error);
+
+      return {
+        success: false,
+        message:
+          error.response?.data?.detail ||
+          error.response?.data?.message ||
+          error.response?.data?.non_field_errors?.[0] ||
+          "Invalid email or password",
+      };
     }
   };
 
-  // Logout function
-  const logout = () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
+  const logout = async () => {
+    await logoutUser();
+
+    setToken(null);
     setUser(null);
   };
 
-  // Prevent UI flicker
-  if (loading) {
-    return <div className="text-center mt-10">Loading...</div>;
-  }
+  const value = {
+    user,
+    token,
+    loading,
+    isAuthenticated: !!token,
+    login,
+    logout,
+  };
 
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        setUser,
-        login,
-        logout,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-// Custom hook
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+  return useContext(AuthContext);
+};

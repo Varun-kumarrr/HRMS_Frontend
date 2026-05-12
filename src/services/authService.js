@@ -1,95 +1,63 @@
 import axiosInstance from "./axiosInstance";
 
-export const loginUser = async (credentials) => {
+// LOGIN API
+export const loginUser = async (email, password) => {
   try {
-    const response = await axiosInstance.post("/api/auth/login/", credentials);
-    return response.data;
-  } catch (error) {
-    console.error("Login error:", error);
-    throw error;
-  }
-};
-
-export const refreshToken = async (refresh) => {
-  try {
-    const response = await axiosInstance.post("/api/auth/refresh/", {
-      refresh,
+    // First try email payload
+    const response = await axiosInstance.post("/api/auth/login/", {
+      email,
+      password,
     });
+
     return response.data;
-  } catch (error) {
-    console.error("Refresh token error:", error);
-    throw error;
+  } catch (firstError) {
+    console.log("First login attempt failed:", firstError.response?.data);
+
+    try {
+      // Second try username payload
+      const response = await axiosInstance.post("/api/auth/login/", {
+        username: email,
+        password,
+      });
+
+      return response.data;
+    } catch (secondError) {
+      console.log("Login error status:", secondError.response?.status);
+      console.log("Login error data:", secondError.response?.data);
+      console.log("Login error full:", secondError);
+
+      throw secondError;
+    }
   }
 };
 
-export const logoutUser = async (refresh) => {
+// LOGOUT API
+export const logoutUser = async () => {
   try {
-    const response = await axiosInstance.post("/api/auth/logout/", {
-      refresh,
-    });
-    return response.data;
+    const refreshToken = localStorage.getItem("refreshToken");
+
+    if (refreshToken) {
+      await axiosInstance.post("/api/auth/logout/", {
+        refresh: refreshToken,
+      });
+    }
   } catch (error) {
-    console.error("Logout error:", error);
-    throw error;
+    console.log("Logout API error:", error.response?.data || error.message);
+  } finally {
+    localStorage.removeItem("token");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("user");
   }
 };
 
+// GET CURRENT EMPLOYEE PROFILE
 export const getEmployeeProfile = async () => {
-  try {
-    const response = await axiosInstance.get("/api/me/");
-    return response.data;
-  } catch (error) {
-    console.error("Get employee profile error:", error);
-    throw error;
-  }
+  const response = await axiosInstance.get("/api/me/");
+  return response.data;
 };
 
+// UPDATE CURRENT EMPLOYEE PROFILE
 export const updateEmployeeProfile = async (data) => {
-  try {
-    const response = await axiosInstance.patch("/api/me/", data);
-    return response.data;
-  } catch (error) {
-    console.error("Update employee profile error:", error);
-    throw error;
-  }
-};
-
-export const getDepartments = async () => {
-  try {
-    const response = await axiosInstance.get("/api/departments/");
-    return response.data;
-  } catch (error) {
-    console.error("Get departments error:", error);
-    throw error;
-  }
-};
-
-export const getDesignations = async () => {
-  try {
-    const response = await axiosInstance.get("/api/designations/");
-    return response.data;
-  } catch (error) {
-    console.error("Get designations error:", error);
-    throw error;
-  }
-};
-
-export const getAdminEmployees = async () => {
-  try {
-    const response = await axiosInstance.get("/api/admin/employees/");
-    return response.data;
-  } catch (error) {
-    console.error("Get admin employees error:", error);
-    throw error;
-  }
-};
-
-export const createEmployee = async (data) => {
-  try {
-    const response = await axiosInstance.post("/api/create_employee/", data);
-    return response.data;
-  } catch (error) {
-    console.error("Create employee error:", error);
-    throw error;
-  }
+  const response = await axiosInstance.patch("/api/me/", data);
+  return response.data;
 };
